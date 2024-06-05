@@ -28,7 +28,9 @@ def apply_keymap(code, system, acts=ACTIONS, onLeft=True):
         keys = set(''.join(''.join(system[row][col] for row in acts[act])
             for col, act in enumerate(code) if act in acts))
     else:
-        keys = set(''.join(''.join(system[row][len(system['0'])-1-col] for row in acts[act])
+        last_col = len(system['0']) - 1 if '0' in system else system['row_len'] - 1
+        last_col = system['row_len'] - 1 if 'row_len' in system else len(system['0']) - 1
+        keys = set(''.join(''.join(system[row][last_col-col] for row in acts[act])
             for col, act in enumerate(code) if act in acts))
 
     for act in code:

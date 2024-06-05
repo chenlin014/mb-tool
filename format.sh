@@ -1,19 +1,6 @@
 #!/bin/sh
 
 case $1 in
-	preprocess)
-		cat | awk -F'\t' '
-		{ 
-			if ($2 ~ /\{.+\}/) {
-				printf("%s\t%s\n", $1, $2);
-			}
-			else {
-				gsub(/(.[重能简]*)/, "& ", $2);
-				gsub(/[ ]+$/, "", $2);
-				printf("%s\t%s\n", $1, $2);
-			}
-		}'
-		;;
 	rime)
 		cat | sed 's/<>//g; s/ | //g'
 		;;
