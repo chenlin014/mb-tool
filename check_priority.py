@@ -12,8 +12,8 @@ def main() -> None:
             csv.reader(f, delimiter='\t')}
 
     with open(args.code_table, encoding='utf-8') as f:
-        mb = {text: code for text, code in
-            csv.reader(f, delimiter='\t')}
+        mb = [(text, code) for text, code in
+            csv.reader(f, delimiter='\t')]
 
     dup_code = find_dup_code(mb)
 
