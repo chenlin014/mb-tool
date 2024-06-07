@@ -14,24 +14,21 @@ def find_dup_code(table):
 
     return dup_code
 
+from common import *
+
 def main():
-    import argparse, csv, sys
+    import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('table', nargs='?', default=None)
     parser.add_argument('-pt', '--priority_table', default=None,
         help='排序表：用于排序重码的字')
     args = parser.parse_args()
 
-    if args.table:
-        with open(args.table, encoding='utf-8') as f:
-            mb = [(char,code) for char, code in csv.reader(f, delimiter='\t')]
-    else:
-        mb = [(char,code) for char, code in csv.reader((line.strip() for line in sys.stdin), delimiter='\t')]
+    mb = from_file_or_stdin(args.table)
 
     if args.priority_table:
-        with open(args.priority_table, encoding='utf_8') as f:
-            reader = csv.reader(f, delimiter='\t')
-            char_priority = {code:chars for code, chars in reader}
+        char_priority = {code:chars for
+            code, chars in table_from_file(args.priority_table)}
     else:
         char_priority = dict()
 
