@@ -1,4 +1,5 @@
-import csv, argparse, sys
+import csv, argparse
+from common import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('priority_table')
@@ -12,17 +13,12 @@ with open(args.priority_table, encoding='utf-8') as f:
     update_table = dict()
     for code, chars in csv.reader(f, delimiter='\t'):
         for i, char in enumerate(chars):
-            update_table[char] = code + uniquifier[i]
+            update_table[f'{char}\t{code}'] = code + uniquifier[i]
 
-if args.mb_path:
-    with open(args.mb_path, encoding='utf-8') as f:
-        mb = [(text,code) for text, code in csv.reader(f, delimiter='\t')]
-else:
-    mb = ((text,code) for text, code in
-            csv.reader((line.strip() for line in sys.stdin), delimiter='\t'))
+mb = from_file_or_stdin(args.mb_path)
 
 for text, code in mb:
-    if text in update_table:
-        code = update_table[text]
+    if f'{text}\t{code}' in update_table:
+        code = update_table[f'{text}\t{code}']
 
     print(f'{text}\t{code}')

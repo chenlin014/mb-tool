@@ -1,4 +1,5 @@
-import json, csv, argparse, sys, re
+import json, csv, argparse, re
+from common import *
 
 ACTIONS = {
     '0': (),
@@ -60,17 +61,11 @@ def main():
         system = json.loads(f.read())
     system['key_order'] = {key: i for i, key in enumerate(system['key_order'])}
 
-    with open(args.chordmap) as f:
-        reader = csv.reader(f, delimiter='\t')
-        chord_map = {zg:(apply_keymap(ma, system, onLeft=True), apply_keymap(ma, system, onLeft=False)) for zg, ma in reader}
+    chord_map = {code:(apply_keymap(chord, system, onLeft=True),
+                     apply_keymap(chord, system, onLeft=False)) for code, chord in
+                    table_from_file(args.chordmap, delimiter='\t')}
 
-    if args.mb_path:
-        with open(args.mb_path, encoding='utf-8') as f:
-            reader = csv.reader(f, delimiter='\t')
-            mb = [(zi,ma) for zi, ma in reader]
-    else:
-        mb = [(zi,ma) for zi, ma in
-            csv.reader((line.strip() for line in sys.stdin), delimiter='\t')]
+    mb = from_file_or_stdin(args.mb_path)
 
     for zi, ma in mb:
         if re.match(r'\{.+\}', ma):

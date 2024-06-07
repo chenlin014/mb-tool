@@ -1,4 +1,5 @@
-import csv, sys, argparse
+import argparse
+from common import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('table1')
@@ -10,13 +11,7 @@ with open(args.table1, encoding='utf_8') as f:
     table1 = [line.split('\t') for line in
         f.read().splitlines()]
 
-if args.table2:
-    with open(args.table2, encoding='utf_8') as f:
-        table2 = [line.split('\t') for line in
-            f.read().splitlines()]
-else:
-    table2 = [line.split('\t') for line in 
-            (line.strip() for line in sys.stdin)]
+table2 = from_file_or_stdin(args.table2)
 
 set1 = set(line[0] for line in table1)
 set2 = set(line[0] for line in table2)

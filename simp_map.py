@@ -1,4 +1,5 @@
 import re
+from common import *
 
 def simp_code(code, method):
     if len(code) <= len(method):
@@ -15,16 +16,8 @@ def main():
 
     method = tuple(int(i) for i in args.method.split(','))
 
-    if args.table:
-        with open(args.table, encoding='utf-8') as f:
-            simp_map = ((text, simp_code(code, method)) for text, code in (
-                line.split('\t') for line in f.read().splitlines()
-            ))
-    else:
-        simp_map = ((text, simp_code(code, method)) for text, code in
-            csv.reader((line.strip() for line in sys.stdin),
-                delimiter='\t')
-        )
+    simp_map = ((text, simp_code(code, method)) for text, code in
+        from_file_or_stdin(args.table))
 
     for text, code in simp_map:
         print(f'{text}\t{code}')
