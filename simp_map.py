@@ -6,18 +6,25 @@ def simp_code(code, method):
     return ''.join(code[ind] for ind in method)
 
 def main():
-    import sys
-    if len(sys.argv) < 3:
-        print(f'{sys.argv[0]} <码表> <取码法>')
-        quit()
+    import sys, argparse, csv
 
-    _, mb_path, method = sys.argv
-    method = tuple(int(ind) for ind in method.split(','))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('method', help='取码法')
+    parser.add_argument('table', help='码表', nargs='?', default=None)
+    args = parser.parse_args()
 
-    with open(mb_path, encoding='utf-8') as f:
-        simp_map = ((text, simp_code(code, method)) for text, code in (
-            line.split('\t') for line in f.read().splitlines()
-        ))
+    method = tuple(int(i) for i in args.method.split(','))
+
+    if args.table:
+        with open(args.table, encoding='utf-8') as f:
+            simp_map = ((text, simp_code(code, method)) for text, code in (
+                line.split('\t') for line in f.read().splitlines()
+            ))
+    else:
+        simp_map = ((text, simp_code(code, method)) for text, code in
+            csv.reader((line.strip() for line in sys.stdin),
+                delimiter='\t')
+        )
 
     for text, code in simp_map:
         print(f'{text}\t{code}')
