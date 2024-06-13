@@ -14,7 +14,7 @@ def find_dup_code(table):
 
     return dup_code
 
-from common import *
+from read_table import *
 
 def main():
     import argparse

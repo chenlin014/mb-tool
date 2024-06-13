@@ -1,5 +1,5 @@
 import json, csv, argparse, re
-from common import *
+from read_table import *
 
 ACTIONS = {
     '0': (),

@@ -1,5 +1,5 @@
 import csv, argparse
-from common import *
+from read_table import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('priority_table')

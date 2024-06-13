@@ -1,5 +1,5 @@
 import re
-from common import *
+from read_table import *
 
 def simp_code(code, method):
     if len(code) <= len(method):
