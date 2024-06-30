@@ -1,8 +1,16 @@
 import csv, sys
 
-def gen_jianma(mb, methods, char_freq=dict()):
-    used_texts = set()
-    jm_table = dict()
+def gen_jianma(code, method):
+    try:
+        return ''.join(code[ind] for ind in method)
+    except:
+        return None
+
+def gen_jianma_table(mb, methods, char_freq=dict()):
+    mt_num = {text: 0 for text in mb}
+    mt_cnt = len(methods)
+    jm_table = {text: gen_jianma(code, methods[0]) for text, code in
+        mb.items()}
 
     min_lens = []
     for method in methods:
@@ -10,36 +18,49 @@ def gen_jianma(mb, methods, char_freq=dict()):
             max(i + 1 if i >= 0 else i * -1 for i in method)
         )
 
-    for method, min_len in zip(methods, min_lens):
-        for text, code in mb.items():
-            for _ in range(100000000):
-                if len(code) < min_len:
-                    break
+    has_problem = True
+    while has_problem:
+        has_problem = False
+        reverse_table = dict()
+        need_update = set()
+        conflicts = dict()
 
-                ncode = ''.join(code[ind] for ind in method)
+        for text, jm in jm_table.items():
+            if mt_num[text] >= mt_cnt:
+                continue
+            if not jm:
+                has_problem = True
+                need_update.add(text)
+                continue
 
-                if text in used_texts:
-                    break
-                if ncode in jm_table:
-                    if char_freq.get(text, 0) > char_freq.get(jm_table[ncode], 0):
-                        old_text = jm_table[ncode]
-
-                        used_texts.remove(old_text)
-                        jm_table[ncode] = text
-                        used_texts.add(text)
-
-                        text = old_text
-                        code = mb[old_text]
-                        continue
+            if jm in reverse_table:
+                has_problem = True
+                if jm in conflicts:
+                    conflicts[jm].append(text)
                 else:
-                    jm_table[ncode] = text
-                    used_texts.add(text)
+                    conflicts[jm] = [reverse_table[jm], text]
+            else:
+                reverse_table[jm] = text
 
-                break
+        for jm, texts in conflicts.items():
+            most_frequent = texts[0]
+            for text in texts[1:]:
+                if char_freq.get(text, 0) > char_freq.get(most_frequent, 0):
+                    most_frequent = text
 
-        used_texts = set(jm_table.values())
+            for text in texts:
+                if text != most_frequent:
+                    need_update.add(text)
 
-    return jm_table
+        for text in need_update:
+            mt_num[text] += 1
+            if mt_num[text] >= mt_cnt:
+                jm_table[text] = None
+            else:
+                jm_table[text] = gen_jianma(mb[text], methods[mt_num[text]])
+
+    return {text: jm for text, jm in
+        jm_table.items() if jm and mt_num[text] < mt_cnt}
 
 def main() -> None:
     import argparse
@@ -66,10 +87,10 @@ def main() -> None:
     else:
         char_freq = dict()
 
-    jm_table = gen_jianma(mb, methods, char_freq)
+    jm_table = gen_jianma_table(mb, methods, char_freq)
 
-    for code, text in jm_table.items():
-        print(f'{text}\t{code}')
+    for text, jm in jm_table.items():
+        print(f'{text}\t{jm}')
 
 if __name__ == '__main__':
     main()
