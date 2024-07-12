@@ -15,7 +15,7 @@ if len(sys.argv) <= 2:
 else:
     with open(sys.argv[2], encoding='utf-8') as f:
         reader = csv.reader(f, delimiter='\t')
-        char_freq = [(char, int(freq)) for char, freq in reader]
+        char_freq = [(char, float(freq)) for char, freq in reader]
     for char, freq in char_freq:
         if not char in mb:
             continue
