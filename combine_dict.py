@@ -1,14 +1,18 @@
-import sys, csv
+import sys, csv, argparse
+from read_table import *
 
-if len(sys.argv) < 2:
-    print(f'Usage: {sys.argv[0]} [码表一] [码表二] ……')
-    quit()
+parser = argparse.ArgumentParser()
+parser.add_argument('tables', nargs='+')
+parser.add_argument('-si', '--stdin', action='store_true')
+args = parser.parse_args()
 
 mb = dict()
-for file in sys.argv[1:]:
-    with open(file, encoding='utf_8') as f:
-        reader = csv.reader(f, delimiter='\t')
-        mb.update({text:code for text, code in reader})
+if args.stdin:
+    mb = {text:code for text, code in table_from_stdin()}
+
+for file in args.tables:
+    mb.update({text:code for text, code in
+        table_from_file(file)})
 
 for text, code in mb.items():
     print(f'{text}\t{code}')
