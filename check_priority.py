@@ -44,12 +44,16 @@ def main() -> None:
     if missingTable:
         print('缺少：')
         for code, texts in missingTable.items():
-            print(f'{code}\t{",".join(texts)}')
+            missing = ','.join(texts)
+            if code in ptable:
+                missing = f'({missing})'
+            print(f'{code}\t{missing}')
         print()
     if extraTable:
         print('多余：')
         for code, texts in extraTable.items():
-            print(f'{code}\t{",".join(texts)}')
+            extra = ','.join(texts)
+            print(f'{code}\t{extra}')
 
 if __name__ == '__main__':
     main()

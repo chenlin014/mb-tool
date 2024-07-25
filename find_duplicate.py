@@ -39,11 +39,14 @@ def main():
     dup_code = find_dup_code(mb)
     dup_code = {code: [text for text in texts if not text in priority_table.get(code, '')]
         for code, texts in dup_code.items()}
-    dup_code = {code: texts for code, texts in dup_code.items() if len(texts) > 1}
+    dup_code = {code: texts for code, texts in dup_code.items() if len(texts) > 0}
 
     print(f'重码率：{sum(len(texts) for texts in dup_code.values())}/{len(mb)}')
     for code, texts in dup_code.items():
-        print(f'{code}\t{",".join(texts)}')
+        if code in priority_table:
+            print(f'{code}\t({",".join(texts)})')
+        else:
+            print(f'{code}\t{",".join(texts)}')
 
 if __name__ == "__main__":
     main()
