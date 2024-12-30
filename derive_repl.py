@@ -41,6 +41,8 @@ def main() -> None:
                 else:
                     text2codes[text] = new_codes
 
+            continue
+
         excluded = replmnt.get('exclude', set())
 
         for text in texts:
