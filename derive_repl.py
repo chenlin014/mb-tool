@@ -21,8 +21,10 @@ def main() -> None:
 
     if args.regex:
         replace = lambda pat, repl, s: re.sub(pat, repl, s)
+        contains = lambda s, pat: bool(re.search(pat, s))
     else:
         replace = lambda pat, repl, s: s.replace(pat, repl)
+        contains = lambda s, pat: pat in s
 
     texts = set(text2codes)
     for replmnt in replmnts:
@@ -49,11 +51,12 @@ def main() -> None:
             if text in excluded:
                 continue
 
-            new_codes = set(replace(pat, repl, code) for code in text2codes[text])
-            if append:
-                text2codes[text] |= new_codes
-            else:
-                text2codes[text] = new_codes
+            old_new = [(code, replace(pat, repl, code)) for code in
+                text2codes[text] if contains(code, pat)]
+            for old_code, new_code in old_new:
+                if not append:
+                    text2codes[text].remove(old_code)
+                text2codes[text].add(new_code)
 
     for text, codes in text2codes.items():
         for code in codes:
