@@ -12,9 +12,9 @@ def main() -> None:
     text2codes = dict()
     for text, code in from_file_or_stdin(args.table):
         if text in text2codes:
-            text2codes[text].add(code)
+            text2codes[text][code] = None
         else:
-            text2codes[text] = {code}
+            text2codes[text] = {code: None}
 
     with open(args.repl_file) as f:
         replmnts = yaml.safe_load(f)
@@ -37,9 +37,9 @@ def main() -> None:
                 if not text in text2codes:
                     continue
 
-                new_codes = set(replace(pat, repl, code) for code in text2codes[text])
+                new_codes = {replace(pat, repl, code):None for code in text2codes[text]}
                 if append:
-                    text2codes[text] |= new_codes
+                    text2codes[text].update(new_codes)
                 else:
                     text2codes[text] = new_codes
 
@@ -51,12 +51,14 @@ def main() -> None:
             if text in excluded:
                 continue
 
-            old_new = [(code, replace(pat, repl, code)) for code in
-                text2codes[text] if contains(code, pat)]
-            for old_code, new_code in old_new:
-                if not append:
-                    text2codes[text].remove(old_code)
-                text2codes[text].add(new_code)
+            new_old = {replace(pat, repl, code): code for code in
+                text2codes[text] if contains(code, pat)}
+            if append:
+                text2codes[text].update(new_old)
+                continue
+            for new_code, old_code in new_old.items():
+                text2codes[text].pop(old_code)
+                text2codes[text][new_code] = None
 
     for text, codes in text2codes.items():
         for code in codes:
