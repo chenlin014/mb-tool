@@ -51,12 +51,12 @@ def main() -> None:
             if text in excluded:
                 continue
 
-            new_old = {replace(pat, repl, code): code for code in
-                text2codes[text] if contains(code, pat)}
+            new_old = [(replace(pat, repl, code), code) for code in
+                text2codes[text] if contains(code, pat)]
             if append:
                 text2codes[text].update(new_old)
                 continue
-            for new_code, old_code in new_old.items():
+            for new_code, old_code in new_old:
                 text2codes[text].pop(old_code)
                 text2codes[text][new_code] = None
 
