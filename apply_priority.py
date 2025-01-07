@@ -1,7 +1,8 @@
 import csv, argparse
 from read_table import *
+from common import common_argparser
 
-parser = argparse.ArgumentParser()
+parser = common_argparser()
 parser.add_argument('priority_table')
 parser.add_argument('mb_path', nargs='?')
 parser.add_argument('-u', '--uniquifier', default=',1,2,3,4,5,6,7,8,9')
@@ -15,7 +16,7 @@ with open(args.priority_table, encoding='utf-8') as f:
         for i, char in enumerate(chars):
             update_table[f'{char}\t{code}'] = code + uniquifier[i]
 
-mb = from_file_or_stdin(args.mb_path)
+mb = read_table(args.mb_path, args.delimiter)
 
 for text, code in mb:
     if f'{text}\t{code}' in update_table:

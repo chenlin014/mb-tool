@@ -2,15 +2,15 @@ import yaml, re
 from read_table import *
 
 def main() -> None:
-    import argparse
-    parser = argparse.ArgumentParser()
+    from common import common_argparser
+    parser = common_argparser()
     parser.add_argument('repl_file')
     parser.add_argument('table', nargs='?', default=None)
     parser.add_argument('-re', '--regex', action='store_true')
     args = parser.parse_args()
 
     text2codes = dict()
-    for text, code in from_file_or_stdin(args.table):
+    for text, code in read_table(args.table, args.delimiter):
         if text in text2codes:
             text2codes[text][code] = None
         else:

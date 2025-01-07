@@ -43,18 +43,18 @@ def parseMethod(method: str):
     return tuple(output)
 
 def main():
-    import argparse
+    from common import common_argparser
 
-    parser = argparse.ArgumentParser()
+    parser = common_argparser()
     parser.add_argument('old2new', help='旧码对新码')
     parser.add_argument('table', nargs='?', help='码表', default=None)
     parser.add_argument('-r', '--rule_table', help='取码规则文件', default=None)
     args = parser.parse_args()
 
     old2new = {old:new for old, new in
-        table_from_file(args.old2new)}
+        read_table(args.old2new, args.delimiter)}
 
-    table = from_file_or_stdin(args.table)
+    table = read_table(args.table, args.delimiter)
 
     if not args.rule_table:
         for text, code in simple_transform(table, old2new):
@@ -62,7 +62,7 @@ def main():
         quit()
 
     rules = [(pattern, parseMethod(method)) for pattern, method in
-        table_from_file(args.rule_table)]
+        read_table(args.rule_table, args.delimiter)]
 
     for text, code in transform_w_rule(table, old2new, rules):
         print(f'{text}\t{code}')

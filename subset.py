@@ -1,15 +1,15 @@
-import argparse
 from read_table import *
+from common import common_argparser
 
-parser = argparse.ArgumentParser()
+parser = common_argparser()
 parser.add_argument('table1')
 parser.add_argument('table2', nargs='?')
 parser.add_argument('-d', '--difference', action='store_true')
 parser.add_argument('-st', '--second-table', action='store_true')
 args = parser.parse_args()
 
-table1 = table_from_file(args.table1)
-table2 = from_file_or_stdin(args.table2)
+table1 = read_table(args.table1, args.delimiter)
+table2 = read_table(args.table2, args.delimiter)
 
 set1 = set(row[0] for row in table1)
 set2 = set(row[0] for row in table2)

@@ -1,5 +1,3 @@
-import csv, sys
-
 def gen_jianma(code, method):
     try:
         return ''.join(code[ind] for ind in method)
@@ -63,8 +61,9 @@ def gen_jianma_table(mb, methods, char_freq=dict()):
         jm_table.items() if jm and mt_num[text] < mt_cnt}
 
 def main() -> None:
-    import argparse
-    parser = argparse.ArgumentParser()
+    from read_table import read_table
+    from common import common_argparser
+    parser = common_argparser()
     parser.add_argument('methods')
     parser.add_argument('table', nargs='?', default=None)
     parser.add_argument('--char-freq', default=None)
@@ -73,17 +72,13 @@ def main() -> None:
     methods = tuple(
                     tuple(map(int, method.split(',')))
                 for method in args.methods.split(':'))
-    if args.table:
-        with open(args.table, encoding='utf-8') as f:
-            mb = {text:code for text, code in csv.reader(f, delimiter='\t')}
-    else:
-        mb = {text:code for text, code in
-            csv.reader((line.strip() for line in sys.stdin), delimiter='\t')}
+
+    mb = {text:code for text, code in
+        read_table(args.table, args.delimiter)}
 
     if args.char_freq:
-        with open(args.char_freq, encoding='utf-8') as f:
-            char_freq = {char: float(freq) for char, freq in
-                csv.reader(f, delimiter='\t')}
+        char_freq = {char: float(freq) for char, freq in
+            read_table(args.char_freq, args.delimiter)}
     else:
         char_freq = dict()
 

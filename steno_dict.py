@@ -1,5 +1,6 @@
-import json, csv, argparse, re
+import json, re
 from read_table import *
+from common import common_argparser
 
 ACTIONS = {
     '0': (),
@@ -51,7 +52,7 @@ def apply_keymap(code, system, acts=ACTIONS, onLeft=True):
     return ''.join(chord)
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = common_argparser()
     parser.add_argument('system', help='并击系统')
     parser.add_argument('chordmap', help='字根并击表')
     parser.add_argument('mb_path', nargs='?', help='码表', default=None)
@@ -63,9 +64,9 @@ def main():
 
     chord_map = {code:(apply_keymap(chord, system, onLeft=True),
                      apply_keymap(chord, system, onLeft=False)) for code, chord in
-                    table_from_file(args.chordmap, delimiter='\t')}
+                    read_table(args.chordmap, delimiter=args.delimiter)}
 
-    mb = from_file_or_stdin(args.mb_path)
+    mb = read_table(args.mb_path, args.delimiter)
 
     for zi, ma in mb:
         if re.match(r'\{.+\}', ma):

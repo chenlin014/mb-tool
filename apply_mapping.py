@@ -2,9 +2,9 @@ from read_table import *
 import json
 
 def main():
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('codemap', help='单指码布局')
+    from common import common_argparser
+    parser = common_argparser()
+    parser.add_argument('codemap', help='区码布局')
     parser.add_argument('keymap', help='键盘布局')
     parser.add_argument('table', nargs='?', help='码表', default=None)
     args = parser.parse_args()
@@ -15,7 +15,7 @@ def main():
         keymap = json.load(f)
     key4code = {code: key for code, key in zip(codemap, keymap)}
 
-    for text, code in from_file_or_stdin(args.table):
+    for text, code in read_table(args.table, args.delimiter):
         print(f'{text}\t{"".join(key4code[c] for c in code)}')
 
 if __name__ == '__main__':

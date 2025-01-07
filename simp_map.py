@@ -7,9 +7,9 @@ def simp_code(code, method):
     return ''.join(code[ind] for ind in method)
 
 def main():
-    import sys, argparse, csv
+    from common import common_argparser
 
-    parser = argparse.ArgumentParser()
+    parser = common_argparser()
     parser.add_argument('method', help='取码法')
     parser.add_argument('table', help='码表', nargs='?', default=None)
     args = parser.parse_args()
@@ -17,7 +17,7 @@ def main():
     method = tuple(int(i) for i in args.method.split(','))
 
     simp_map = ((text, simp_code(code, method)) for text, code in
-        from_file_or_stdin(args.table))
+        read_table(args.table, args.delimiter))
 
     for text, code in simp_map:
         print(f'{text}\t{code}')

@@ -1,19 +1,18 @@
 def main() -> None:
-    import argparse, csv, sys
+    from read_table import read_table
+    from common import common_argparser
     from find_duplicate import find_dup_code
 
-    parser = argparse.ArgumentParser()
+    parser = common_argparser()
     parser.add_argument('priority_table')
     parser.add_argument('code_table')
     args = parser.parse_args()
 
-    with open(args.priority_table, encoding='utf-8') as f:
-        ptable = {code: chars for code, chars in
-            csv.reader(f, delimiter='\t')}
+    ptable = {code: chars for code, chars in
+        read_table(args.priority_table, args.delimiter)}
 
-    with open(args.code_table, encoding='utf-8') as f:
-        mb = [(text, code) for text, code in
-            csv.reader(f, delimiter='\t')]
+    mb = [(text, code) for text, code in
+        read_table(args.code_table, args.delimiter)]
 
     dup_code = find_dup_code(mb)
 

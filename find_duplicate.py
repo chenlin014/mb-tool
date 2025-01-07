@@ -17,22 +17,22 @@ def find_dup_code(table):
 from read_table import *
 
 def main():
-    import argparse
-    parser = argparse.ArgumentParser()
+    from common import common_argparser
+    parser = common_argparser()
     parser.add_argument('table', nargs='?', default=None)
     parser.add_argument('-pt', '--priority_table', default=None,
         help='排序表：用于排序重码的字')
     parser.add_argument('-r', '--reverse', action='store_true')
     args = parser.parse_args()
 
-    mb = from_file_or_stdin(args.table)
+    mb = read_table(args.table, args.delimiter)
 
     if args.reverse:
         mb = [(code, text) for text, code in mb]
 
     if args.priority_table:
-        priority_table = {code:texts for
-            code, texts in table_from_file(args.priority_table)}
+        priority_table = {code:texts for code, texts in
+            read_table(args.priority_table, args.delimiter)}
     else:
         priority_table = dict()
 

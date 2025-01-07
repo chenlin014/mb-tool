@@ -28,8 +28,8 @@ def column_repl(table: list[list[str]], replmnts: list[str, str], column: int = 
     return new_table
 
 def main() -> None:
-    import argparse
-    parser = argparse.ArgumentParser()
+    from common import common_argparser
+    parser = common_argparser()
     parser.add_argument('replmnts')
     parser.add_argument('table', nargs='?', default=None)
     parser.add_argument('-c', '--column', default=0)
@@ -38,14 +38,15 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.file:
-        replmnts = table_from_file(args.replmnts)
+        replmnts = read_table(args.replmnts, args.delimiter)
     else:
         replmnts = [repl.split(' -> ', 1) for repl in
             args.replmnts.split('; ')]
 
     args.column = int(args.column)
 
-    new_table = column_repl(from_file_or_stdin(args.table), replmnts, args.column, args.regex)
+    new_table = column_repl(read_table(args.table, args.delimiter),
+                            replmnts, args.column, args.regex)
     for row in new_table:
         print('\t'.join(row))
 
