@@ -1,6 +1,7 @@
 import sys, csv
 
 DEFAULT_DELIM = '\t'
+DEFAULT_ENC = 'utf-8'
 
 def table_from_file(path: str, delimiter=DEFAULT_DELIM, encoding='utf-8'):
     with open(path, encoding=encoding) as f:
@@ -15,16 +16,18 @@ def table_from_stdin(delimiter='\t'):
         delimiter=delimiter)
     return [row for row in reader]
 
-def read_table(path=None, delimiter=DEFAULT_DELIM):
-    if not delimiter:
-        delimiter = DEFAULT_DELIM
-
+def read_table(path=None, delimiter=None, encoding='utf-8'):
     if not path:
+        if not delimiter:
+            delimiter = DEFAULT_DELIM
         return table_from_stdin(delimiter)
 
-    if path.endswith('.tsv'):
-        delim = '\t'
-    elif path.endswith('.csv'):
-        delim = ','
+    if not delimiter:
+        if path.endswith('.tsv'):
+            delimiter = '\t'
+        elif path.endswith('.csv'):
+            delimiter = ','
+        else:
+            delimiter = DEFAULT_DELIM
 
     return table_from_file(path, delimiter)
