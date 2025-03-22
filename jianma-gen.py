@@ -4,7 +4,7 @@ def gen_jianma(code, method):
     except:
         return None
 
-def gen_jianma_table(mb, methods, char_freq=dict()):
+def gen_jianma_table(mb, methods, text_freq=dict()):
     mt_num = {text: 0 for text in mb}
     mt_cnt = len(methods)
     jm_table = {text: gen_jianma(code, methods[0]) for text, code in
@@ -43,7 +43,7 @@ def gen_jianma_table(mb, methods, char_freq=dict()):
         for jm, texts in conflicts.items():
             most_frequent = texts[0]
             for text in texts[1:]:
-                if char_freq.get(text, 0) > char_freq.get(most_frequent, 0):
+                if text_freq.get(text, 0) > text_freq.get(most_frequent, 0):
                     most_frequent = text
 
             for text in texts:
@@ -66,7 +66,7 @@ def main() -> None:
     parser = common_argparser()
     parser.add_argument('methods')
     parser.add_argument('table', nargs='?', default=None)
-    parser.add_argument('--char-freq', nargs='?', default=None)
+    parser.add_argument('--freq-table', nargs='?', default=None)
     args = parser.parse_args()
 
     methods = tuple(
@@ -76,13 +76,13 @@ def main() -> None:
     mb = {text:code for text, code in
         read_table(args.table, args.delimiter)}
 
-    if args.char_freq:
-        char_freq = {char: float(freq) for char, freq in
-            read_table(args.char_freq, args.delimiter)}
+    if args.text_freq:
+        text_freq = {char: float(freq) for char, freq in
+            read_table(args.freq_table, args.delimiter)}
     else:
-        char_freq = dict()
+        text_freq = dict()
 
-    jm_table = gen_jianma_table(mb, methods, char_freq)
+    jm_table = gen_jianma_table(mb, methods, text_freq)
 
     for text, jm in jm_table.items():
         print(f'{text}\t{jm}')
