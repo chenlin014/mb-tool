@@ -1,8 +1,16 @@
-import csv, sys
+from read_table import read_table
+from common import common_argparser
 
-if len(sys.argv) == 1:
-    print(f'Usage: {sys.argv[0]} <mb> [char_freq]')
-    exit()
+parser = common_argparser()
+parser.add_argument('table', nargs='?', default=None)
+parser.add_argument('--freq-table', nargs='?', default=None)
+
+table = ((text, code) for text, code in
+         read_table(args.table, args.delimiter))
+
+if args.freq_table:
+    text_freq = {text: float(freq) for text, freq in
+        read_table(args.freq_table, args.delimiter)}
 
 with open(sys.argv[1], encoding='utf-8') as f:
     reader = csv.reader(f, delimiter='\t')
