@@ -76,7 +76,7 @@ def main() -> None:
     mb = {text:code for text, code in
         read_table(args.table, args.delimiter)}
 
-    if args.text_freq:
+    if args.freq_table:
         text_freq = {char: float(freq) for char, freq in
             read_table(args.freq_table, args.delimiter)}
     else:
