@@ -2,7 +2,6 @@
 
 |程序|注释|错误处理|测试|
 |---|:-:|:-:|:-:|
-| | | | |
 |apply_mapping.py| | | |
 |apply_priority.py| | | |
 |assign_code.py| | | |
