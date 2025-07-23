@@ -13,10 +13,12 @@ def main():
         codemap = json.load(f)
     with open(args.keymap) as f:
         keymap = json.load(f)
-    key4code = {code: key for code, key in zip(codemap, keymap)}
 
-    for text, code in read_table(args.table, args.delimiter):
-        print(f'{text}\t{"".join(key4code[c] for c in code)}')
+    for text, codes in read_table(args.table, args.delimiter):
+        ncodes = codes
+        for code, key in zip(codemap, keymap):
+            ncodes = ncodes.replace(code, key)
+        print(f'{text}\t{ncodes}')
 
 if __name__ == '__main__':
     main()
