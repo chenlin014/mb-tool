@@ -54,7 +54,7 @@ def main():
     if not args.rule_table:
         for text, code in table:
             keys = ''.join(key4code[c] for c in code)
-            print(f'{word}\t{keys}')
+            print(f'{text}\t{keys}')
         quit()
 
     rules = [(pattern, parseMethod(method)) for pattern, method in
