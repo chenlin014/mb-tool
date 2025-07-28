@@ -22,6 +22,8 @@ def main():
     parser.add_argument('table', nargs='?', default=None)
     parser.add_argument('-pt', '--priority_table', default=None,
         help='排序表：用于排序重码的字')
+    parser.add_argument('-f', '--format', default="{code}\t{texts}",
+        help='輸出格式')
     parser.add_argument('-r', '--reverse', action='store_true')
     parser.add_argument('-sr', '--show-rate', action='store_true',
         help='顯示重碼率')
@@ -47,9 +49,15 @@ def main():
         print(f'重码率：{sum(len(texts) for texts in dup_code.values())}/{len(mb)}')
     for code, texts in dup_code.items():
         if code in priority_table:
-            print(f'{code}\t({",".join(texts)})')
+            #print(f'{code}\t({",".join(texts)})')
+            print(args.format.format(
+                code=code, texts=f'({",".join(texts)})'
+            ))
         else:
-            print(f'{code}\t{",".join(texts)}')
+            print(args.format.format(
+                code=code, texts=",".join(texts)
+            ))
+            #print(f'{code}\t{",".join(texts)}')
 
 if __name__ == "__main__":
     main()
