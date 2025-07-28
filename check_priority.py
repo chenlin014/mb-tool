@@ -6,53 +6,38 @@ def main() -> None:
     parser = common_argparser()
     parser.add_argument('priority_table')
     parser.add_argument('code_table')
+    parser.add_argument('-c', '--char-only', action='store_true')
     args = parser.parse_args()
 
-    ptable = {code: chars for code, chars in
-        read_table(args.priority_table, args.delimiter)}
+    if args.char_only:
+        ptable_sets = set(frozenset(texts) for texts, *_ in
+            read_table(args.priority_table, args.delimiter))
+    else:
+        ptable_sets = set(frozenset(texts) for texts in
+            read_table(args.priority_table, args.delimiter))
 
-    mb = [(text, code) for text, code in
-        read_table(args.code_table, args.delimiter)]
+    dup_sets = set(frozenset(texts) for texts in
+        find_dup_code(read_table(args.code_table, args.delimiter)).values())
 
-    dup_code = find_dup_code(mb)
+    missing_sets = dup_sets.difference(ptable_sets)
+    extra_sets = ptable_sets.difference(dup_sets)
 
-    missingTable = dict()
-    extraTable = dict()
-    for code, texts in dup_code.items():
-        texts = set(texts)
-        if not code in ptable:
-            missingTable[code] = texts
-            continue
+    if args.char_only:
+        delim = ''
+    elif args.delimiter:
+        delim = args.delimiter
+    else:
+        delim = ','
 
-        ptexts = set(ptable[code])
-        missing = texts.difference(ptexts)
-        if missing:
-            missingTable[code] = missing
-
-    for code, ptexts in ptable.items():
-        ptexts = set(ptexts)
-        if not code in dup_code:
-            extraTable[code] = set(ptexts)
-            continue
-
-        texts = set(dup_code[code])
-        extra = ptexts.difference(texts)
-        if extra:
-            extraTable[code] = extra
-
-    if missingTable:
+    if missing_sets:
         print('缺少：')
-        for code, texts in missingTable.items():
-            missing = ','.join(texts)
-            if code in ptable:
-                missing = f'({missing})'
-            print(f'{code}\t{missing}')
+        for texts in missing_sets:
+            print(delim.join(texts))
         print()
-    if extraTable:
+    if extra_sets:
         print('多余：')
-        for code, texts in extraTable.items():
-            extra = ','.join(texts)
-            print(f'{code}\t{extra}')
+        for texts in extra_sets:
+            print(delim.join(texts))
 
 if __name__ == '__main__':
     main()
