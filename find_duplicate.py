@@ -23,6 +23,8 @@ def main():
     parser.add_argument('-pt', '--priority_table', default=None,
         help='排序表：用于排序重码的字')
     parser.add_argument('-r', '--reverse', action='store_true')
+    parser.add_argument('-sr', '--show-rate', action='store_true',
+        help='顯示重碼率')
     args = parser.parse_args()
 
     mb = read_table(args.table, args.delimiter)
@@ -41,7 +43,8 @@ def main():
         for code, texts in dup_code.items()}
     dup_code = {code: texts for code, texts in dup_code.items() if len(texts) > 0}
 
-    print(f'重码率：{sum(len(texts) for texts in dup_code.values())}/{len(mb)}')
+    if args.show_rate:
+        print(f'重码率：{sum(len(texts) for texts in dup_code.values())}/{len(mb)}')
     for code, texts in dup_code.items():
         if code in priority_table:
             print(f'{code}\t({",".join(texts)})')
