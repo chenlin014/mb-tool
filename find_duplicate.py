@@ -8,9 +8,9 @@ def find_dup_code(table):
             continue
 
         if code in dup_code:
-            dup_code[code].append(text)
+            dup_code[code].add(text)
         else:
-            dup_code[code] = [reverse_table[code], text]
+            dup_code[code] = set([reverse_table[code], text])
 
     return dup_code
 
@@ -51,7 +51,6 @@ def main():
         print(f'重码率：{sum(len(texts) for texts in dup_code.values())}/{len(mb)}')
     for code, texts in dup_code.items():
         if code in priority_table:
-            #print(f'{code}\t({",".join(texts)})')
             print(args.format.format(
                 code=code, texts=f'({args.text_delim.join(texts)})'
             ))
@@ -59,7 +58,6 @@ def main():
             print(args.format.format(
                 code=code, texts=args.text_delim.join(texts)
             ))
-            #print(f'{code}\t{",".join(texts)}')
 
 if __name__ == "__main__":
     main()
