@@ -24,6 +24,8 @@ def main():
         help='排序表：用于排序重码的字')
     parser.add_argument('-f', '--format', default="{code}\t{texts}",
         help='輸出格式')
+    parser.add_argument('-td', '--text-delim', default=",",
+        help='字辞分隔符')
     parser.add_argument('-r', '--reverse', action='store_true')
     parser.add_argument('-sr', '--show-rate', action='store_true',
         help='顯示重碼率')
@@ -51,11 +53,11 @@ def main():
         if code in priority_table:
             #print(f'{code}\t({",".join(texts)})')
             print(args.format.format(
-                code=code, texts=f'({",".join(texts)})'
+                code=code, texts=f'({args.text_delim.join(texts)})'
             ))
         else:
             print(args.format.format(
-                code=code, texts=",".join(texts)
+                code=code, texts=args.text_delim.join(texts)
             ))
             #print(f'{code}\t{",".join(texts)}')
 
