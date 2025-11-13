@@ -28,6 +28,6 @@ code2priority = {code:set2priority[texts] for code, texts in
 
 for text, code in mb:
     if code in code2priority:
-        code = f'{code}{uniquifier[code2priority[code].index(text)]}'
+        code = f'{code}\t{uniquifier[code2priority[code].index(text)]}'
 
     print(f'{text}\t{code}')
