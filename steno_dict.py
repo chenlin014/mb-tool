@@ -91,7 +91,7 @@ def main():
 
         table = read_table(args.table, args.delimiter)
 
-    for text, codes in table:
+    for text, codes, *other_fields in table:
         if re.match(r'\{.+\}', codes):
             chords = [acts_to_chord(acts, system, onLeft=(i%2 == 0))
                 for i, acts in enumerate(codes[1:-1].split(','))]
@@ -106,7 +106,15 @@ def main():
         if len(chords) % 2 == 1:
             strokes.append((chords[-1],))
 
-        print(f'{text}\t{" | ".join("<>".join(stroke) for stroke in strokes)}')
+        print('{text}\t{code}'.format(
+            text = text,
+            code = " | ".join("<>".join(stroke) for stroke in strokes)
+        ), end='')
+
+        if other_fields:
+            print('\t'+'\t'.join(other_fields))
+        else:
+            print()
 
 if __name__ == '__main__':
     main()
