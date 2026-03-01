@@ -2,7 +2,7 @@
 
 case $1 in
 	rime)
-		cat | sed "s/<>//g; s/ | /'/g"
+		cat | sed "s/<>//g; s/ | /|/g"
 		;;
 	algebra)
 		cat | sed 's/<>//g; s/ | //g' | sed -E 's/(.+)\t(.+)/- xform|^\2$|\1|/'
