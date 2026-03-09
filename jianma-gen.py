@@ -67,6 +67,7 @@ def main() -> None:
     parser.add_argument('methods')
     parser.add_argument('table', nargs='?', default=None)
     parser.add_argument('--freq-table', nargs='?', default=None)
+    parser.add_argument('--format', default='{text}\t{jm}')
     args = parser.parse_args()
 
     methods = tuple(
@@ -85,7 +86,9 @@ def main() -> None:
     jm_table = gen_jianma_table(mb, methods, text_freq)
 
     for text, jm in jm_table.items():
-        print(f'{text}\t{jm}')
+        print(args.format.format(
+            text=text, code=mb[text], jm=jm
+        ))
 
 if __name__ == '__main__':
     main()
